@@ -1,0 +1,18 @@
+{
+    "type": "metric",
+    "height": 6,
+    "width": 12,
+    "y": 34,
+    "x": 0,
+    "properties": {
+      "metrics": [
+        ["AWS/S3", "NumberOfObjects", "BucketName", "your-bucket-name-1", "StorageType", "AllStorageTypes"],
+        ["AWS/S3", "NumberOfObjects", "BucketName", "your-bucket-name-2", "StorageType", "AllStorageTypes"]
+      ],
+      "period": 300,
+      "stat": "Average",
+      "region": "us-east-1",
+      "title": "S3 BucketObject Count",
+      "view": "singleValue"
+    }
+  }

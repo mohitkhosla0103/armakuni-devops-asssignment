@@ -1,0 +1,18 @@
+{
+    "type": "metric",
+    "height": 6,
+    "width": 12,
+    "y": 34,
+    "x": 12,
+    "properties": {
+      "metrics": [
+        ["AWS/S3", "BucketSizeBytes", "BucketName", "your-bucket-name-1", "StorageType", "your-storage-type"],
+        ["AWS/S3", "BucketSizeBytes", "BucketName", "your-bucket-name-2", "StorageType", "your-storage-type"]
+      ],
+      "period": 300,
+      "stat": "Average",
+      "region": "us-east-1",
+      "title": "S3 Bucket Size",
+      "view": "singleValue"
+    }
+  }

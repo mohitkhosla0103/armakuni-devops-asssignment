@@ -1,0 +1,18 @@
+{
+    "type": "metric",
+    "height": 6,
+    "width": 8,
+    "y": 28,
+    "x": 0,
+    "properties": {
+      "metrics": [
+        ["AWS/ApplicationELB", "HTTPCode_ELB_5XX_Count", "LoadBalancer", "your-alb-name-1"],
+        ["AWS/ApplicationELB", "HTTPCode_ELB_5XX_Count", "LoadBalancer", "your-alb-name-2"]
+      ],
+      "period": 300,
+      "stat": "Sum",
+      "region": "us-east-1",
+      "title": "ALB 5xx Error Count",
+      "view": "timeSeries"
+    }
+  }

@@ -1,0 +1,18 @@
+{
+    "type": "metric",
+    "height": 6,
+    "width": 8,
+    "y": 12,
+    "x": 8,
+    "properties": {
+      "metrics": [
+        ["AWS/RDS", "WriteIOPS", "DBInstanceIdentifier", "your-db-dentifier-name-1"],
+        ["AWS/RDS", "WriteIOPS", "DBInstanceIdentifier", "your-db-dentifier-name-2"]
+      ],
+      "period": 300,
+      "stat": "Average",
+      "region": "us-east-1",
+      "title": "RDS Write IOPS",
+      "view": "timeSeries"
+    }
+}

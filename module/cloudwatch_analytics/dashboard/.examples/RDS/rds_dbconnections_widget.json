@@ -1,0 +1,19 @@
+{
+    "type": "metric",
+    "height": 6,
+    "width": 8,
+    "y": 6,
+    "x": 0,
+    "properties": {
+      "metrics": [
+        ["AWS/RDS", "DatabaseConnections", "DBInstanceIdentifier", "your-db-identifier-name-1"],
+        ["AWS/RDS", "DatabaseConnections", "DBInstanceIdentifier", "your-db-identifier-name-2"]
+      ],
+      "period": 300,
+      "stat": "Average",
+      "region": "us-east-1",
+      "title": "RDS Database Connections",
+      "view": "timeSeries"
+    }
+  }
+  

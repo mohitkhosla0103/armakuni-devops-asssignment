@@ -1,0 +1,19 @@
+{
+    "type": "metric",
+    "x": 0,
+    "y": 0,
+    "width": 12,
+    "height": 6,
+    "properties": {
+      "metrics": [
+        ["CWAgent", "disk_used_percent", "InstanceId", "your-instance-id-1"],
+        ["CWAgent", "disk_used_percent", "InstanceId", "your-instance-id-2"],
+        ["CWAgent", "disk_used_percent", "InstanceId", "your-instance-id-3"] 
+      ],
+      "period": 300,
+      "stat": "Average",
+      "region": "us-east-1",
+      "title": "EC2 Instance Disc SPace",
+      "view": "timeSeries"
+    }
+   }

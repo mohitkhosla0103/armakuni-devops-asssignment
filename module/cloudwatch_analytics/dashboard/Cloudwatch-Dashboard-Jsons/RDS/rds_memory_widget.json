@@ -1,0 +1,19 @@
+{
+    "type": "metric",
+    "height": 6,
+    "width": 8,
+    "y": 6,
+    "x": 16,
+    "properties": {
+      "metrics": [
+        ["AWS/RDS", "FreeableMemory", "DBInstanceIdentifier", "your-db-dentifier-name-1"],
+        ["AWS/RDS", "FreeableMemory", "DBInstanceIdentifier", "your-db-dentifier-name-2"]
+      ],
+      "period": 300,
+      "stat": "Average",
+      "region": "us-east-1",
+      "title": "RDS Freeable Memory",
+      "view": "timeSeries"
+    }
+  }
+  

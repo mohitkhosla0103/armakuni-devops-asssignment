@@ -1,0 +1,18 @@
+{
+    "type": "metric",
+    "height": 6,
+    "width": 8,
+    "y": 24,
+    "x": 8,
+    "properties": {
+      "metrics": [
+        ["AWS/ApplicationELB", "ActiveConnectionCount", "LoadBalancer", "your-alb-name-1"],
+        ["AWS/ApplicationELB", "ActiveConnectionCount", "LoadBalancer", "your-alb-name-2"]
+      ],
+      "period": 300,
+      "stat": "Average",
+      "region": "us-east-1",
+      "title": "ALB Active Connections",
+      "view": "timeSeries"
+    }
+  }
