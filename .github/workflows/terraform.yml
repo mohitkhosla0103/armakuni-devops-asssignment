@@ -32,8 +32,8 @@ env:
   ENVIRONMENT: "dev"
 
 jobs:
-  terraform-plan:
-    name: 'Terraform-plan'
+  terraform:
+    name: 'Terraform'
     runs-on: ubuntu-latest
     environment : ${{ github.event.inputs.environment || 'dev' }}
 
@@ -75,5 +75,4 @@ jobs:
 
     
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
