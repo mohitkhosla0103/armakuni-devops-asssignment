@@ -353,3 +353,26 @@ module "cicd" {
 
   depends_on = [module.ecr, module.s3]
 }
+
+# ################################################################
+# #                            EC2-Bastion                       #
+# ################################################################
+
+module "ec2_instances" {
+  source = "../module/ec2"
+
+  for_each = local.ec2_instances // Look for EC2 section in local.tf
+
+  ec2_instance_name         = each.value.ec2_instance_name // Add ec2 instance name
+  instance_type             = each.value.instance_type     // Add ec2 instance type
+  key_pair_name             = each.value.key_pair_name     //Create ssh key-pair using console
+  iam_instance_profile      = each.value.iam_instance_profile
+  subnet_id                 = each.value.subnet_id
+  vpc_security_group_ids    = each.value.vpc_security_group_ids
+  root_block_device_details = each.value.root_block_device
+  spot_instance_details     = each.value.spot_instance_details
+  user_data_script          = each.value.user_data_script
+  number_of_instances       = each.value.number_of_instances
+  tags                      = var.tags
+  extra_tags                = var.extra_tags
+}

@@ -181,4 +181,53 @@ locals {
   }
 
 
+  #################################################################
+  #                          EC2                                  #
+  #################################################################
+
+  ec2_instances = {
+    ec2_1 = {
+      ec2_instance_name = "${terraform.workspace}-bastion-host"
+      instance_type     = "t2.micro"
+
+      key_pair_name = "bastion-host"
+
+      iam_instance_profile = {
+        create_new_instance_profile      = false
+        custom_iam_instance_profile_name = ""
+
+        iam_role_name                 = ""
+        create_inline_policy          = false
+        inline_iam_policy_name        = ""
+        inline_iam_policy_description = ""
+        inline_policy_actions         = []
+        inline_policy_resource        = ""
+
+        attach_managed_policy = false
+        managed_policy_arns   = []
+
+        use_existing_instance_profile  = false
+        existing_instance_profile_name = ""
+      }
+
+      subnet_id              = local.pub_subnet_ids[0]
+      vpc_security_group_ids = [module.independent_security_group["${terraform.workspace}-bastion-host-sg"].sg_id]
+
+      root_block_device = {
+        volume_type           = "gp3"
+        volume_size           = "8"
+        delete_on_termination = true
+      }
+
+      spot_instance_details = {}
+
+      user_data_script = ""
+
+      number_of_instances = 1
+    }
+  }
+
+
+
 }
+
