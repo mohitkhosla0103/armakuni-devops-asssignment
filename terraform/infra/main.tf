@@ -181,10 +181,130 @@ module "ecr" {
   tags       = var.tags
   extra_tags = var.extra_tags
 
-<<<<<<< HEAD
-}
-=======
 }
 
+# ################################################################
+# #                            ECS Cluster                       #
+# ################################################################
 
->>>>>>> aad5273c8365f3f29c6afb76e028066b05ad8f20
+module "ecs_cluster" {
+  source = "../module/ecs-cluster"
+
+  cluster_type      = var.cluster_type
+  cluster_name      = var.ecs_cluster_name
+  capacity_provider = var.capacity_provider_name
+
+
+  maximum_scaling_step_size = var.max_scaling_step_size
+  #autoscaling_launch_template
+  launch_template_name          = var.ecs_template_name
+  launch_template_instance_type = var.ecs_instance_type
+  user_data_script              = local.encoded_userdata
+  key_name                      = var.ecs_instance_ssh_name
+  security_group_ids            = [module.dependent_security_group["${local.environment}-autoscaling-group-sg"].sg_id]
+  ebs_volume_size               = var.ecs_volume_size
+  ebs_volume_type               = var.ecs_instance_volume_type
+  enable_encryption             = true
+  tag_value                     = var.ecs_tag_value
+  #autoscaling_group
+  # if you want to create all the spot instances then give true value to use_ec2_spot_instances variable and value false for all the on demand instance.
+  use_ec2_spot_instances = var.use_ec2_spot_instances //For ECS with EC2
+  asg_name               = var.ecs_asg_name
+  min_size               = var.ecs_asg_min_size
+  max_size               = var.ecs_asg_max_size
+  desired_capacity       = var.ecs_asg_desired_size
+  vpc_id                 = module.vpc.vpc_id
+  subnet_ids             = local.pvt_subnet_ids
+  ecs_instance_role_name = var.ecs_instance_role_name
+  instance_profile       = var.ecs_instance_profile_name
+  tags                   = var.tags
+  extra_tags             = var.extra_tags
+
+}
+
+# ################################################################
+# #                            ECS Service                       #
+# ################################################################
+module "ecs_service" {
+  source = "../module/ecs"
+
+  for_each               = var.ecs_service
+  container_runtime      = each.value.container_runtime
+  ecs_task_role          = each.value.ecs_task_role
+  ecs_service_role       = each.value.ecs_service_role
+  listener_rule_priority = each.value.listener_rule_priority
+
+  //Enter following 3 values in .tfvars for each port
+  path_pattern      = ""
+  host_header       = ""
+  health_check_path = ""
+
+  health_check_interval = each.value.health_check_interval
+  health_check_timeout  = each.value.health_check_timeout
+  healthy_threshold     = each.value.healthy_threshold
+  unhealthy_threshold   = each.value.unhealthy_threshold
+
+  attach_load_balancer = each.value.attach_load_balancer
+  security_group_ids   = [module.dependent_security_group["${local.environment}-autoscaling-group-sg"].sg_id]
+  private_subnet_ids   = local.pvt_subnet_ids
+
+
+  ecs_task_family                        = each.value.ecs_task_family
+  ecs_secrets_access_policy              = each.value.ecs_secrets_access_policy
+  ecs_secrets_access_policy_resource_arn = each.value.ecs_secrets_access_policy_resource_arn
+  network_mode                           = each.value.network_mode
+  requires_compatibilities               = each.value.requires_compatibilities
+
+  cpu         = each.value.cpu
+  task_cpu    = each.value.task_cpu
+  task_memory = each.value.task_memory
+  softLimit   = each.value.softLimit
+  hardLimit   = each.value.hardLimit
+
+  port_mappings      = each.value.port_mappings
+  health_check_paths = each.value.health_check_paths
+
+  ecs_container_image    = module.ecr[each.value.ecr_repo_name].ecr_url
+  ecs_awslogs_group      = each.value.ecs_awslogs_group
+  ecs_region             = data.aws_region.current.name
+  ecs_awslogs_stream     = each.value.ecs_awslogs_stream
+  cpu_architecture       = each.value.cpu_architecture
+  ecs_service_name       = each.value.ecs_service_name
+  ecs_service_cluster_id = module.ecs_cluster.cluster_id
+  desired_count          = each.value.desired_count
+  scheduling_strategy    = each.value.scheduling_strategy
+  awslogs_region         = data.aws_region.current.name
+  ecs_container_name     = each.value.ecs_container_name
+  vpc_id                 = module.vpc.vpc_id
+
+  ecs_service_cluster_name = each.value.ecs_service_cluster_name
+
+  env_task_defintions = each.value.env_task_defintions
+
+  secrets = each.value.secrets
+
+  create_tg       = each.value.create_tg
+  use_existing_tg = each.value.use_existing_tg
+  existing_tg_arn = each.value.existing_tg_arn
+  listener_arn    = module.load_balancer.alb_http_listener_arn //change this to https listener arn when domain available
+  create_lr       = each.value.create_lr
+
+  load_balancer_arn = module.load_balancer.alb_arn
+  tg-name           = each.value.tg-name
+
+  autoscaling_enabled = each.value.autoscaling_enabled
+  max_capacity        = each.value.max_capacity
+  min_capacity        = each.value.min_capacity
+
+  is_internal_service = each.value.is_internal_service
+
+  ## service_discovery_private_dns_id argument will be uncommented only if we are having atleast one internal service. 
+  ## Otherwise for the external services it will be commented as we won't need to call the service discovery module.
+  # service_discovery_private_dns_id       = each.value.is_internal_service == true ? module.service_discovery_private_dns.private_dns_name : ""
+
+  tags       = var.tags
+  extra_tags = var.extra_tags
+
+  depends_on = [module.cicd]
+}
+
