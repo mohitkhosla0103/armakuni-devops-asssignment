@@ -305,7 +305,7 @@ module "ecs_service" {
   tags       = var.tags
   extra_tags = var.extra_tags
 
-  depends_on = [module.cicd]
+  depends_on = [module.cicd, module.ecr]
 }
 
 
