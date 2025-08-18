@@ -181,4 +181,10 @@ module "ecr" {
   tags       = var.tags
   extra_tags = var.extra_tags
 
+<<<<<<< HEAD
 }
+=======
+}
+
+
+>>>>>>> aad5273c8365f3f29c6afb76e028066b05ad8f20

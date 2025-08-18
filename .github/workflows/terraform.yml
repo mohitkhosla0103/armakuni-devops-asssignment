@@ -32,8 +32,8 @@ env:
   ENVIRONMENT: "dev"
 
 jobs:
-  terraform-plan:
-    name: 'Terraform-plan'
+  terraform:
+    name: 'Terraform'
     runs-on: ubuntu-latest
     environment : ${{ github.event.inputs.environment || 'dev' }}
 
@@ -64,19 +64,15 @@ jobs:
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
-
+      
       - name: Terraform workspace
         id: workspace-select
         run: terraform workspace select ${{ env.ENVIRONMENT }} || terraform workspace new ${{ env.ENVIRONMENT }}
 
-      - name: Terraform Unlock
-        run: terraform force-unlock -force e5d08f15-c6a5-4d21-9e96-16785f2e3966
-      
       - name: Terraform Plan
         id: terraform-plan
         run: terraform plan -var-file="terraform.tfvars"
 
     
       # - name: Terraform Apply
-      #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       #   run: terraform apply -auto-approve

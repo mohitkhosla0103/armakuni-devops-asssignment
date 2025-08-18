@@ -40,10 +40,4 @@ data "aws_region" "current" {}
 #   types = ["AMAZON_ISSUED"]
 # }
 
-# #################################################################
-# #                          RDS                                  #
-# #################################################################
 
-data "aws_secretsmanager_secret_version" "demo_rds_creds" {
-  secret_id = "demo_rds_creds"                               //name of secret
-}
