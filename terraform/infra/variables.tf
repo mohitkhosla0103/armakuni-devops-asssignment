@@ -270,3 +270,44 @@ variable "ecs_service" {
     min_capacity        = number
   }))
 }
+
+# ################################################################
+# #                            ECS CI-CD                         #
+# ################################################################
+variable "ecs_cicd" {
+  description = "Map of ECS service CI-CD configuration"
+  type = map(object({
+
+
+    /* -------------------------------- codebuild ------------------------------- */
+    # codebuild_project_name = string
+    # codebuild_role_name    = string
+    codebuild_repo_policy_name         = string
+    codebuild_repo_role_name           = string
+    codebuild_repo_project_name        = string
+    codebuild_repo_source_version      = string
+    buildspec_file_name                = string
+    codebuild_repo_project_description = string
+    codebuild_repo_source_location     = string
+    codebuild_repo_artifacts_name      = string
+    branch_event_type                  = string
+    branch_head_ref                    = string
+    environment_variables              = map(string)
+
+
+    /* ------------------------------ codepipeline ------------------------------ */
+    codepipeline_name        = string
+    codepipeline_policy_name = string
+    codepipeline_role_name   = string
+    ecs_service_name         = string
+    ecs_service_cluster_name = string
+    remote_party_owner       = string
+    source_version_provider  = string
+    connection_arn           = string
+    remote_repo_name         = string
+    remote_branch            = string
+    remote_file_path         = string
+    deployment_timeout       = number
+    definition_file_name     = string
+  }))
+}
