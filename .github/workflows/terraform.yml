@@ -69,6 +69,9 @@ jobs:
         id: workspace-select
         run: terraform workspace select ${{ env.ENVIRONMENT }} || terraform workspace new ${{ env.ENVIRONMENT }}
 
+      - name: Terraform Unlock
+        run: terraform force-unlock -force 622bbb84-bbcc-5457-bf13-58ffc75246f4
+      
       - name: Terraform Plan
         id: terraform-plan
         run: terraform plan -var-file="terraform.tfvars"
