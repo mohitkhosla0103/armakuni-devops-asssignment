@@ -43,7 +43,7 @@ alb_idle_timeout = 60
 # #                          ECR                                  #
 # #################################################################
 repositories = {
-  "mohit-dev-backend-mohit-dev-repo" = {
+  "mohit-dev-backend-poc-repo" = {
     name                 = "mohit-dev-backend-poc-repo"
     image_tag_mutability = "MUTABLE"
     scan_on_push         = true
