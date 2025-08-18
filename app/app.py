@@ -17,5 +17,5 @@ def health():
     return {"status": "ok"}, 200
 
 if __name__ == "__main__":
-    # Run on 0.0.0.0 so it's accessible in Docker
-    app.run(host="0.0.0.0", port=5000)
+    # Run on 0.0.0.0 so it's accessible in Docker, port 3000
+    app.run(host="0.0.0.0", port=3000)
