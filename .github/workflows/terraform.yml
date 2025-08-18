@@ -59,7 +59,7 @@ jobs:
 
       - name: Terraform Format
         id: fmt
-        run: terraform fmt -check
+        run: terraform fmt -recursive
 
       - name: Terraform Validate
         id: validate
