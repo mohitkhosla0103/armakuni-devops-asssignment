@@ -309,3 +309,46 @@ module "ecs_service" {
 }
 
 
+# ################################################################
+# #                            ECS CI-CD                         #
+# ################################################################
+module "cicd" {
+  source   = "../module/ci-cd"
+  for_each = var.ecs_cicd
+
+  ecs_service_name         = each.value.ecs_service_name
+  ecs_service_cluster_name = each.value.ecs_service_cluster_name
+  ecs_region               = data.aws_region.current.name
+
+  codebuild_repo_policy_name            = each.value.codebuild_repo_policy_name
+  codebuild_repo_project_description    = each.value.codebuild_repo_project_description
+  codebuild_codepipeline_artifact_store = module.s3["${local.environment}-my-proj-artifact-bucket"].s3_name
+  codebuild_repo_artifacts_location     = module.s3["${local.environment}-my-proj-artifact-bucket"].s3_name
+  codebuild_repo_role_name              = each.value.codebuild_repo_role_name
+  codebuild_repo_project_name           = each.value.codebuild_repo_project_name
+  codebuild_repo_source_version         = each.value.codebuild_repo_source_version
+  codebuild_repo_source_location        = each.value.codebuild_repo_source_location
+  codebuild_repo_artifacts_name         = each.value.codebuild_repo_artifacts_name
+  branch_event_type                     = each.value.branch_event_type
+  branch_head_ref                       = each.value.branch_head_ref
+  environment_variables                 = each.value.environment_variables
+
+  codepipeline_name        = each.value.codepipeline_name // Also creates new folder for each codepipeline build & source artifacts in artifact bucket 
+  codepipeline_policy_name = each.value.codepipeline_policy_name
+  buildspec_file_name      = each.value.buildspec_file_name
+  codepipeline_role_name   = each.value.codepipeline_role_name
+
+  remote_party_owner      = each.value.remote_party_owner
+  source_version_provider = each.value.source_version_provider
+  connection_arn          = each.value.connection_arn
+  remote_repo_name        = each.value.remote_repo_name
+  remote_branch           = each.value.remote_branch
+  remote_file_path        = each.value.remote_file_path
+  deployment_timeout      = each.value.deployment_timeout
+  definition_file_name    = each.value.definition_file_name
+
+  tags       = var.tags
+  extra_tags = var.extra_tags
+
+  depends_on = [module.ecr, module.s3]
+}
