@@ -20,8 +20,8 @@ terraform {
     bucket         = "mohit-terraform-statefile" //S3 bucket to store terraform state (To be created by console)
     key            = "terraform.state"
     region         = "us-east-1"
-    dynamodb_table = "terraform-mohit"       //Dynamo db table for terraform state locking (To be created by console)
     profile        = "aws-terraform-profile" //Profile to be used
+    use_lockfile  = true
 
 
     #         //for running code locally using aws secret key & access key specify this profile in  "vi ~/.aws/configure" in terminal
