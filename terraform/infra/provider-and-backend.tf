@@ -8,20 +8,20 @@ terraform {
 }
 provider "aws" {
   #profile = "aws-terraform-profile" //Profile to be used
-  region  = "us-east-1"             //Region
-     #assume_role {
-      #role_arn = var.provider_env_roles[terraform.workspace]
-     #}
+  region = "us-east-1" //Region
+  #assume_role {
+  #role_arn = var.provider_env_roles[terraform.workspace]
+  #}
 }
 
 
 terraform {
   backend "s3" {
-    bucket         = "mohit-terraform-statefile" //S3 bucket to store terraform state (To be created by console)
-    key            = "terraform.state"
-    region         = "us-east-1"
-    #profile        = "aws-terraform-profile" //Profile to be used
-    use_lockfile  = true
+    bucket = "mohit-terraform-statefile" //S3 bucket to store terraform state (To be created by console)
+    key    = "terraform.state"
+    region = "us-east-1"
+    #profile      = "aws-terraform-profile" //Profile to be used
+    use_lockfile = true
 
 
     #         //for running code locally using aws secret key & access key specify this profile in  "vi ~/.aws/configure" in terminal
