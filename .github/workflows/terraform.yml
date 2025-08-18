@@ -73,6 +73,9 @@ jobs:
         id: terraform-plan
         run: terraform plan -var-file="terraform.tfvars"
 
+      - name: Terraform Apply
+        run: terraform apply --auto-approve 
+
     
       # - name: Terraform Apply
       #   run: terraform apply -auto-approve
