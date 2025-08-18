@@ -7,7 +7,7 @@ terraform {
   }
 }
 provider "aws" {
-  #profile = "aws-terraform-profile" //Profile to be used
+  profile = "aws-terraform-profile" //Profile to be used
   region  = "us-east-1"             //Region
   #   assume_role {
   #     role_arn = var.provider_env_roles[terraform.workspace]
