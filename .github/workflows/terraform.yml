@@ -65,9 +65,6 @@ jobs:
         id: validate
         run: terraform validate -no-color
       
-      - name: Terraform unlock
-        run: terraform force-unlock -force  caf2a786-ee5d-439e-c158-8a867a09b153
-      
       - name: Terraform workspace
         id: workspace-select
         run: terraform workspace select ${{ env.ENVIRONMENT }} || terraform workspace new ${{ env.ENVIRONMENT }}
