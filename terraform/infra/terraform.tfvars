@@ -69,7 +69,7 @@ s3_bucket = {
 # ################################################################
 # #                             ECS  Cluster                     #
 # ################################################################
-cluster_type     = "FARGATE"     // value of cluster_type can be FARGATE or EC2.
+cluster_type     = "EC2"         // value of cluster_type can be FARGATE or EC2.
 ecs_cluster_name = "dev-cluster" //cluster-name should be in format ("terraform.workspace-cluster") or you can change format for all envs(see ecs cluster in local.tf)
 
 //below values does not have any part in Fargate cluster (cannot have null values)
@@ -97,10 +97,8 @@ ecs_instance_ssh_name     = "dev-autoscaling-group-ssh-key" //Create ssh key-pai
 # #################################################################
 
 ecs_service = {
-
-  ## ecs with fargate variables example
   backend-service = {
-    container_runtime = "FARGATE" // value of container_runtime can be FARGATE or EC2.   
+    container_runtime = "EC2" // value of container_runtime can be FARGATE or EC2.   
     ecs_task_role     = "dev-backend-task-role"
     ecs_service_role  = "dev-backend-service-role"
 
@@ -112,8 +110,8 @@ ecs_service = {
     unhealthy_threshold   = 2
 
     ecs_task_family          = "dev-backend-task-definition"
-    network_mode             = "awsvpc"
-    requires_compatibilities = ["FARGATE"]
+    network_mode             = "bridge"
+    requires_compatibilities = ["EC2"]
     task_cpu                 = 256
     task_memory              = 512
     cpu                      = 256
@@ -124,7 +122,7 @@ ecs_service = {
     port_mappings = [
       {
         containerPort = 3000
-        hostPort      = 3000
+        hostPort      = "3000"
         protocol      = "tcp"
         name          = "3000"
         path_pattern  = "/"
@@ -164,7 +162,83 @@ ecs_service = {
     secrets             = []
 
   }
+
 }
+
+
+
+
+
+
+#   ----
+
+#   ## ecs with fargate variables example
+#   backend-service = {
+#     container_runtime = "FARGATE" // value of container_runtime can be FARGATE or EC2.   
+#     ecs_task_role     = "dev-backend-task-role"
+#     ecs_service_role  = "dev-backend-service-role"
+
+#     listener_rule_priority = 1 // Must be unique for each service
+
+#     health_check_interval = 30
+#     health_check_timeout  = 5
+#     healthy_threshold     = 5
+#     unhealthy_threshold   = 2
+
+#     ecs_task_family          = "dev-backend-task-definition"
+#     network_mode             = "awsvpc"
+#     requires_compatibilities = ["FARGATE"]
+#     task_cpu                 = 256
+#     task_memory              = 512
+#     cpu                      = 256
+#     softLimit                = 256
+#     hardLimit                = 512
+#     ecr_repo_name            = "mohit-dev-backend-poc-repo" //ECR repo name
+
+#     port_mappings = [
+#       {
+#         containerPort = 3000
+#         hostPort      = 3000
+#         protocol      = "tcp"
+#         name          = "3000"
+#         path_pattern  = "/"
+#         host_header   = ""
+#       }
+#     ]
+#     health_check_paths = {
+#       3000 = "/healthz"
+
+#     }
+
+#     ecs_awslogs_group                      = "/ecs/dev-awslog-group-backend"
+#     ecs_awslogs_stream                     = "ecs"
+#     cpu_architecture                       = "X86_64"
+#     ecs_service_name                       = "dev-backend-service"
+#     desired_count                          = 1
+#     scheduling_strategy                    = "REPLICA"
+#     ecs_container_name                     = "dev-backend"
+#     ecs_service_cluster_name               = "dev-cluster"
+#     ecs_secrets_access_policy              = "dev-ecs-backend-secrets-access-policy"
+#     ecs_secrets_access_policy_resource_arn = "*" //Create secret using console & mention its arn
+
+#     attach_load_balancer = true
+#     is_internal_service  = false
+
+#     create_tg       = true
+#     use_existing_tg = false
+#     existing_tg_arn = ""
+#     create_lr       = true
+#     tg-name         = "dev-backend-tg"
+
+#     autoscaling_enabled = true
+#     max_capacity        = 2
+#     min_capacity        = 1
+
+#     env_task_defintions = []
+#     secrets             = []
+
+#   }
+# }
 
 # ################################################################
 # #                            ECS CI-CD                         #
