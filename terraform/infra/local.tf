@@ -79,6 +79,112 @@ locals {
   #                          Security Groups                      #
   #################################################################
 
+  # independent_security_group = {
+  #   "${terraform.workspace}-loadbalancer-sg" = {
+  #     name        = "${terraform.workspace}-loadbalancer-sg"
+  #     description = "${terraform.workspace} loadbalancer sg"
+  #     ingress_rules = [
+  #       {
+  #         from_port   = 80
+  #         to_port     = 80
+  #         protocol    = "tcp"
+  #         cidr_blocks = ["0.0.0.0/0"]
+  #         //ipv6_cidr_block = ["::/0"]
+  #         description     = "Allow all traffic"
+  #         security_groups = []
+  #       },
+  #       {
+  #         from_port   = 443
+  #         to_port     = 443
+  #         protocol    = "tcp"
+  #         cidr_blocks = ["0.0.0.0/0"]
+  #         // ipv6_cidr_block  =["::/0"]
+  #         description     = "Allow all traffic"
+  #         security_groups = []
+  #       }
+  #     ]
+  #     egress_rules = [
+  #       {
+  #         from_port       = 0
+  #         to_port         = 0
+  #         protocol        = "-1"
+  #         cidr_blocks     = ["0.0.0.0/0"]
+  #         description     = "Allow all outbound traffic"
+  #         security_groups = []
+  #       }
+  #     ]
+  #     tags = {
+
+  #     }
+  #   },
+  #   "${terraform.workspace}-bastion-host-sg" = {
+  #     name        = "${terraform.workspace}-bastion-host-sg"
+  #     description = "${terraform.workspace} bastionhost sg"
+  #     ingress_rules = [
+  #       {
+  #         from_port   = 22
+  #         to_port     = 22
+  #         protocol    = "tcp"
+  #         cidr_blocks = []
+  #         //ipv6_cidr_block = ["::/0"]
+  #         description     = "Allow all traffic"
+  #         security_groups = []
+  #       }
+  #     ]
+  #     egress_rules = [
+  #       {
+  #         from_port       = 0
+  #         to_port         = 0
+  #         protocol        = "-1"
+  #         cidr_blocks     = ["0.0.0.0/0"]
+  #         description     = "Allow all outbound traffic"
+  #         security_groups = []
+  #       }
+  #     ]
+  #     tags = {
+
+  #     }
+  #   }
+
+  # }
+
+
+  # dependent_security_group = {
+  #   "${terraform.workspace}-autoscaling-group-sg" = {
+  #     name        = "${terraform.workspace}-autoscaling-group-sg"
+  #     description = "${terraform.workspace} autoscaling-group sg"
+  #     ingress_rules = [
+  #       {
+  #         from_port       = 0
+  #         to_port         = 0
+  #         protocol        = "-1"
+  #         cidr_blocks     = ["0.0.0.0/0"]
+  #         description     = ""
+  #         security_groups = []
+  #       }
+  #     ]
+  #     egress_rules = [
+  #       {
+  #         from_port       = 0
+  #         to_port         = 0
+  #         protocol        = "-1"
+  #         cidr_blocks     = ["0.0.0.0/0"]
+  #         description     = "Allow all outbound traffic"
+  #         security_groups = []
+  #       }
+  #     ]
+  #     tags = {
+
+  #     }
+
+  #   }
+  # }
+
+
+  #################################################################
+  #                          Security Groups                      #
+  #################################################################
+
   independent_security_group = {
     "${terraform.workspace}-loadbalancer-sg" = {
       name        = "${terraform.workspace}-loadbalancer-sg"
@@ -158,6 +264,42 @@ locals {
           from_port       = 0
           to_port         = 0
           protocol        = "-1"
+          cidr_blocks     = []
+          description     = ""
+          security_groups = [module.independent_security_group["${terraform.workspace}-loadbalancer-sg"].sg_id]
+        },
+        {
+          from_port       = 0
+          to_port         = 0
+          protocol        = "-1"
+          cidr_blocks     = []
+          description     = ""
+          security_groups = [module.independent_security_group["${terraform.workspace}-bastion-host-sg"].sg_id]
+        }
+      ]
+      egress_rules = [
+        {
+          from_port       = 0
+          to_port         = 0
+          protocol        = "-1"
+          cidr_blocks     = ["0.0.0.0/0"]
+          description     = "Allow all outbound traffic"
+          security_groups = []
+        }
+      ]
+      tags = {
+
+      }
+
+    },
+    "${terraform.workspace}-rds-sg" = {
+      name        = "${terraform.workspace}-rds-sg"
+      description = "${terraform.workspace} rds sg"
+      ingress_rules = [
+        {
+          from_port       = 0
+          to_port         = 0
+          protocol        = "-1"
           cidr_blocks     = ["0.0.0.0/0"]
           description     = ""
           security_groups = []
@@ -178,6 +320,7 @@ locals {
       }
 
     }
+
   }
 
 
