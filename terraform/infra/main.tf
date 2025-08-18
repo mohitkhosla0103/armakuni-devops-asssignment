@@ -322,16 +322,17 @@ module "cicd" {
 
   codebuild_repo_policy_name            = each.value.codebuild_repo_policy_name
   codebuild_repo_project_description    = each.value.codebuild_repo_project_description
-  codebuild_codepipeline_artifact_store = module.s3["${local.environment}-my-proj-artifact-bucket"].s3_name
-  codebuild_repo_artifacts_location     = module.s3["${local.environment}-my-proj-artifact-bucket"].s3_name
-  codebuild_repo_role_name              = each.value.codebuild_repo_role_name
-  codebuild_repo_project_name           = each.value.codebuild_repo_project_name
-  codebuild_repo_source_version         = each.value.codebuild_repo_source_version
-  codebuild_repo_source_location        = each.value.codebuild_repo_source_location
-  codebuild_repo_artifacts_name         = each.value.codebuild_repo_artifacts_name
-  branch_event_type                     = each.value.branch_event_type
-  branch_head_ref                       = each.value.branch_head_ref
-  environment_variables                 = each.value.environment_variables
+  codebuild_codepipeline_artifact_store = module.s3["mohit-dev-my-proj-artifact-bucket"].s3_name
+  codebuild_repo_artifacts_location     = module.s3["mohit-dev-my-proj-artifact-bucket"].s3_name
+
+  codebuild_repo_role_name       = each.value.codebuild_repo_role_name
+  codebuild_repo_project_name    = each.value.codebuild_repo_project_name
+  codebuild_repo_source_version  = each.value.codebuild_repo_source_version
+  codebuild_repo_source_location = each.value.codebuild_repo_source_location
+  codebuild_repo_artifacts_name  = each.value.codebuild_repo_artifacts_name
+  branch_event_type              = each.value.branch_event_type
+  branch_head_ref                = each.value.branch_head_ref
+  environment_variables          = each.value.environment_variables
 
   codepipeline_name        = each.value.codepipeline_name // Also creates new folder for each codepipeline build & source artifacts in artifact bucket 
   codepipeline_policy_name = each.value.codepipeline_policy_name
