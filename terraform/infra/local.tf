@@ -251,33 +251,31 @@ locals {
 
       }
     },
-
-    "${terraform.workspace}-private-sg" = {
-      name        = "${terraform.workspace}-private-sg"
-      description = "${terraform.workspace} private ecs service sg"
+    #private ECS added
+    "${terraform.workspace}-private-ecs-sg" = {
+      name        = "${terraform.workspace}-private-ecs-sg"
+      description = "Private ECS service SG"
       ingress_rules = [
         {
-          from_port   = 8080
+          from_port   = 8080 # Port your service listens on
           to_port     = 8080
           protocol    = "tcp"
           cidr_blocks = [] # No public access
           security_groups = [
             module.dependent_security_group["${terraform.workspace}-autoscaling-group-sg"].sg_id
-          ] # Only allow traffic from Service 1 (autoscaling-group-sg)
-          description = "Allow Service 1 to access private service"
+          ] # Only allow traffic from existing ECS service
+          description = "Allow existing ECS service to access private service"
         }
       ]
       egress_rules = [
         {
-          from_port       = 0
-          to_port         = 0
-          protocol        = "-1"
-          cidr_blocks     = ["0.0.0.0/0"]
-          security_groups = []
-          description     = "Allow all outbound traffic"
+          from_port   = 0
+          to_port     = 0
+          protocol    = "-1"
+          cidr_blocks = ["0.0.0.0/0"] # Allow outbound traffic if needed
         }
       ]
-      tags = {}
+      tags = var.extra_tags
     }
 
 
@@ -348,28 +346,9 @@ locals {
 
       }
 
-    },
-    "${local.environment}-private-sg" = {
-      ingress_rules = [
-        {
-          from_port       = 8080
-          to_port         = 8080
-          protocol        = "tcp"
-          security_groups = [module.dependent_security_group["${local.environment}-autoscaling-group-sg"].sg_id]
-        }
-      ]
-      egress_rules = [
-        {
-          from_port   = 0
-          to_port     = 0
-          protocol    = "-1"
-          cidr_blocks = ["0.0.0.0/0"]
-        }
-      ]
     }
 
   }
-
 
   #################################################################
   #                          EC2                                  #
