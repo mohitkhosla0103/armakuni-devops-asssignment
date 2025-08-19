@@ -12,6 +12,14 @@ provider "aws" {
   #assume_role {
   #role_arn = var.provider_env_roles[terraform.workspace]
   #}
+
+    default_tags {
+    tags = {
+      Project     = "mohit-poc"
+      Environment = "dev"
+      # Owner       = "team-devops"
+    }
+  }
 }
 
 

@@ -123,6 +123,7 @@ resource "aws_autoscaling_group" "autoscaling_group" {
   vpc_zone_identifier   = var.subnet_ids
   protect_from_scale_in = false
 
+
   mixed_instances_policy {
 
     instances_distribution {
@@ -140,26 +141,30 @@ resource "aws_autoscaling_group" "autoscaling_group" {
     
   }
 
-  tag {
-    key                 = "Name"
-    value               = var.launch_template_name
-    propagate_at_launch = true
-  }
-
-  tag {
-    key                 = "AmazonECSManaged"
-    value               = true
-    propagate_at_launch = true
-  }
-  tag {
-    key                 = "Project"
-    value               = "mohit-poc"
-    propagate_at_launch = true
-  }
-   tag {
-    key                 = "Environment"
-    value               = "dev"
-    propagate_at_launch = true
-  }
+tag {
+  key                 = "Name"
+  value               = "${var.launch_template_name}-instance"
+  propagate_at_launch = true
 }
 
+tag {
+  key                 = "AmazonECSManaged"
+  value               = "true"
+  propagate_at_launch = true
+}
+
+tag {
+  key                 = "Project"
+  value               = "mohit-poc"
+  propagate_at_launch = true
+}
+
+tag {
+  key                 = "Environment"
+  value               = "dev"
+  propagate_at_launch = true
+}
+
+
+
+}
