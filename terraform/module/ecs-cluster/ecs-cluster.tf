@@ -151,5 +151,15 @@ resource "aws_autoscaling_group" "autoscaling_group" {
     value               = true
     propagate_at_launch = true
   }
-
+  tag {
+    key                 = "Project"
+    value               = "mohit-poc"
+    propagate_at_launch = true
+  }
+   tag {
+    key                 = "Environment"
+    value               = "dev"
+    propagate_at_launch = true
+  }
 }
+
