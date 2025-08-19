@@ -113,7 +113,8 @@ resource "aws_iam_role" "ecs_task_role" {
     {
       "Name"             = var.ecs_task_role
       "TerraformManaged" = true
-    }
+    },
+    var.extra_tags
   )
 }
 

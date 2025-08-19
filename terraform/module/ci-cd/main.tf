@@ -71,10 +71,14 @@ resource "aws_iam_policy" "CodeBuildBasePolicy-policy-repo" {
     }
   EOF
 
-  tags = {
-    Name             = "CodeBuildBasePolicy-${var.codebuild_repo_policy_name}"
-    TerraformManaged = true
-  }
+
+    tags = merge(
+    {
+      "Name"             ="CodeBuildBasePolicy-${var.codebuild_repo_policy_name}"
+      "TerraformManaged" = true
+    },
+    var.extra_tags
+  )
 }
 
 resource "aws_iam_role" "codebuild-service-role" {
@@ -109,10 +113,14 @@ resource "aws_iam_role" "codebuild-service-role" {
   name                 = var.codebuild_repo_role_name
   path                 = "/service-role/"
 
-  tags = {
-    Name             = var.codebuild_repo_role_name
-    TerraformManaged = true
-  }
+  tags = merge(
+    {
+      Name             = var.codebuild_repo_role_name
+      TerraformManaged = true
+    },
+    var.extra_tags
+  )
+
 }
 
 resource "aws_codebuild_project" "this" {
@@ -434,10 +442,18 @@ resource "aws_iam_role" "codepipeline-iam-role" {
   name                 = var.codepipeline_role_name
   depends_on           = [aws_iam_policy.codepipeline-iam-policy]
   path                 = "/service-role/"
-  tags = {
-    Name             = var.codepipeline_role_name
-    TerraformManaged = true
-  }
+  # tags = {
+  #   Name             = var.codepipeline_role_name
+  #   TerraformManaged = true
+  # }
+
+  tags = merge(
+    {
+      "Name"             = var.codepipeline_role_name
+      "TerraformManaged" = true
+    },
+    var.extra_tags
+  )
 }
 
 resource "aws_codepipeline" "this" {
