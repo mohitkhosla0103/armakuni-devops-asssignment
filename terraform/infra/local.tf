@@ -233,16 +233,16 @@ locals {
   }
 
 
-  private_ecs_ingress_rule = [
-    {
-      from_port       = 8080
-      to_port         = 8080
-      protocol        = "tcp"
-      cidr_blocks     = []
-      security_groups = [module.dependent_security_group["${local.environment}-autoscaling-group-sg"].sg_id]
-      description     = "Allow existing ECS service to access private ECS"
-    }
-  ]
+  # private_ecs_ingress_rule = [
+  #   {
+  #     from_port       = 8080
+  #     to_port         = 8080
+  #     protocol        = "tcp"
+  #     cidr_blocks     = []
+  #     security_groups = [module.dependent_security_group["${local.environment}-autoscaling-group-sg"].sg_id]
+  #     description     = "Allow existing ECS service to access private ECS"
+  #   }
+  # ]
 
   #################################################################
   #                          EC2                                  #
