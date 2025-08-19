@@ -156,6 +156,8 @@ locals {
           protocol        = "-1"
           cidr_blocks     = ["0.0.0.0/0"] # allow outbound if needed
           security_groups = []
+          description     = "Allow all outbound traffic"
+
         }
       ]
       tags = var.extra_tags
