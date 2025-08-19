@@ -131,7 +131,7 @@ module "independent_security_group" {
   sg_name        = each.value.name
   sg_description = each.value.description
   vpc_id         = module.vpc.vpc_id
-  ingress_rules  = each.value.ingress_rules
+  ingress_rules  = each.key == "${local.environment}-private-ecs-sg" ? local.private_ecs_ingress_rule : each.value.ingress_rules
   egress_rules   = each.value.egress_rules
   tags           = var.tags
   extra_tags     = var.extra_tags

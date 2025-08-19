@@ -74,113 +74,6 @@ locals {
 
 
 
-
-  #################################################################
-  #                          Security Groups                      #
-  #################################################################
-
-  # independent_security_group = {
-  #   "${terraform.workspace}-loadbalancer-sg" = {
-  #     name        = "${terraform.workspace}-loadbalancer-sg"
-  #     description = "${terraform.workspace} loadbalancer sg"
-  #     ingress_rules = [
-  #       {
-  #         from_port   = 80
-  #         to_port     = 80
-  #         protocol    = "tcp"
-  #         cidr_blocks = ["0.0.0.0/0"]
-  #         //ipv6_cidr_block = ["::/0"]
-  #         description     = "Allow all traffic"
-  #         security_groups = []
-  #       },
-  #       {
-  #         from_port   = 443
-  #         to_port     = 443
-  #         protocol    = "tcp"
-  #         cidr_blocks = ["0.0.0.0/0"]
-  #         // ipv6_cidr_block  =["::/0"]
-  #         description     = "Allow all traffic"
-  #         security_groups = []
-  #       }
-  #     ]
-  #     egress_rules = [
-  #       {
-  #         from_port       = 0
-  #         to_port         = 0
-  #         protocol        = "-1"
-  #         cidr_blocks     = ["0.0.0.0/0"]
-  #         description     = "Allow all outbound traffic"
-  #         security_groups = []
-  #       }
-  #     ]
-  #     tags = {
-
-  #     }
-  #   },
-  #   "${terraform.workspace}-bastion-host-sg" = {
-  #     name        = "${terraform.workspace}-bastion-host-sg"
-  #     description = "${terraform.workspace} bastionhost sg"
-  #     ingress_rules = [
-  #       {
-  #         from_port   = 22
-  #         to_port     = 22
-  #         protocol    = "tcp"
-  #         cidr_blocks = []
-  #         //ipv6_cidr_block = ["::/0"]
-  #         description     = "Allow all traffic"
-  #         security_groups = []
-  #       }
-  #     ]
-  #     egress_rules = [
-  #       {
-  #         from_port       = 0
-  #         to_port         = 0
-  #         protocol        = "-1"
-  #         cidr_blocks     = ["0.0.0.0/0"]
-  #         description     = "Allow all outbound traffic"
-  #         security_groups = []
-  #       }
-  #     ]
-  #     tags = {
-
-  #     }
-  #   }
-
-  # }
-
-
-  # dependent_security_group = {
-  #   "${terraform.workspace}-autoscaling-group-sg" = {
-  #     name        = "${terraform.workspace}-autoscaling-group-sg"
-  #     description = "${terraform.workspace} autoscaling-group sg"
-  #     ingress_rules = [
-  #       {
-  #         from_port       = 0
-  #         to_port         = 0
-  #         protocol        = "-1"
-  #         cidr_blocks     = ["0.0.0.0/0"]
-  #         description     = ""
-  #         security_groups = []
-  #       }
-  #     ]
-  #     egress_rules = [
-  #       {
-  #         from_port       = 0
-  #         to_port         = 0
-  #         protocol        = "-1"
-  #         cidr_blocks     = ["0.0.0.0/0"]
-  #         description     = "Allow all outbound traffic"
-  #         security_groups = []
-  #       }
-  #     ]
-  #     tags = {
-
-  #     }
-
-  #   }
-  # }
-
-
   #################################################################
   #                          Security Groups                      #
   #################################################################
@@ -252,27 +145,16 @@ locals {
       }
     },
     #private ECS added
-    "${terraform.workspace}-private-ecs-sg" = {
-      name        = "${terraform.workspace}-private-ecs-sg"
-      description = "Private ECS service SG"
-      ingress_rules = [
-        {
-          from_port   = 8080 # Port your service listens on
-          to_port     = 8080
-          protocol    = "tcp"
-          cidr_blocks = [] # No public access
-          security_groups = [
-            module.dependent_security_group["${terraform.workspace}-autoscaling-group-sg"].sg_id
-          ] # Only allow traffic from existing ECS service
-          description = "Allow existing ECS service to access private service"
-        }
-      ]
+    "${local.environment}-private-ecs-sg" = {
+      name          = "${local.environment}-private-ecs-sg"
+      description   = "Private ECS service SG"
+      ingress_rules = [] # leave empty
       egress_rules = [
         {
           from_port   = 0
           to_port     = 0
           protocol    = "-1"
-          cidr_blocks = ["0.0.0.0/0"] # Allow outbound traffic if needed
+          cidr_blocks = ["0.0.0.0/0"] # allow outbound if needed
         }
       ]
       tags = var.extra_tags
@@ -349,6 +231,18 @@ locals {
     }
 
   }
+
+
+  private_ecs_ingress_rule = [
+    {
+      from_port       = 8080
+      to_port         = 8080
+      protocol        = "tcp"
+      cidr_blocks     = []
+      security_groups = [module.dependent_security_group["${local.environment}-autoscaling-group-sg"].sg_id]
+      description     = "Allow existing ECS service to access private ECS"
+    }
+  ]
 
   #################################################################
   #                          EC2                                  #
