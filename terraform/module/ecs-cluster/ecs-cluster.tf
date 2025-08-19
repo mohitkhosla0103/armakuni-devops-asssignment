@@ -68,6 +68,13 @@ resource "aws_iam_role" "ecs_instance_role" {
     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
     "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
   ]
+
+  tags = merge(
+    {
+      Name = var.ecs_instance_role_name
+    },
+    var.extra_tags
+  )
 }
 
 
