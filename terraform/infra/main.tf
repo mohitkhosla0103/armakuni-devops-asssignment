@@ -245,7 +245,7 @@ module "ecs_service" {
   unhealthy_threshold   = each.value.unhealthy_threshold
 
   attach_load_balancer = each.value.attach_load_balancer
-  security_group_ids   = [module.dependent_security_group["${local.environment}-autoscaling-group-sg"].sg_id]
+  security_group_ids   = each.value.is_internal_service ? [module.dependent_security_group["${local.environment}-private-sg"].sg_id] : [module.dependent_security_group["${local.environment}-autoscaling-group-sg"].sg_id]
   private_subnet_ids   = local.pvt_subnet_ids
 
 
@@ -300,7 +300,7 @@ module "ecs_service" {
 
   ## service_discovery_private_dns_id argument will be uncommented only if we are having atleast one internal service. 
   ## Otherwise for the external services it will be commented as we won't need to call the service discovery module.
-  # service_discovery_private_dns_id       = each.value.is_internal_service == true ? module.service_discovery_private_dns.private_dns_name : ""
+  service_discovery_private_dns_id = each.value.is_internal_service ? module.service_discovery_private_dns.private_dns_name : null
 
   tags       = var.tags
   extra_tags = var.extra_tags

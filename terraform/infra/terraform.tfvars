@@ -162,6 +162,69 @@ ecs_service = {
 
   }
 
+  private-service = {
+    container_runtime = "EC2"
+    ecs_task_role     = "dev-private-task-role"
+    ecs_service_role  = "dev-private-service-role"
+
+    listener_rule_priority = 2
+    health_check_interval  = 30
+    health_check_timeout   = 5
+    healthy_threshold      = 5
+    unhealthy_threshold    = 2
+
+    ecs_task_family          = "dev-private-task-definition"
+    network_mode             = "bridge"
+    requires_compatibilities = ["EC2"]
+    task_cpu                 = 256
+    task_memory              = 512
+    cpu                      = 256
+    softLimit                = 256
+    hardLimit                = 512
+    ecr_repo_name            = "mohit-dev-backend-poc-repo"
+
+    port_mappings = [
+      {
+        containerPort = 8080
+        hostPort      = "8080"
+        protocol      = "tcp"
+        name          = "8080"
+        path_pattern  = "/"
+        host_header   = ""
+      }
+    ]
+    health_check_paths = {
+      8080 = "/health"
+    }
+
+    ecs_awslogs_group                      = "/ecs/dev-awslog-group-private"
+    ecs_awslogs_stream                     = "ecs"
+    cpu_architecture                       = "X86_64"
+    ecs_service_name                       = "dev-private-service"
+    desired_count                          = 1
+    scheduling_strategy                    = "REPLICA"
+    ecs_container_name                     = "dev-private"
+    ecs_service_cluster_name               = "dev-cluster"
+    ecs_secrets_access_policy              = "dev-ecs-private-secrets-access-policy"
+    ecs_secrets_access_policy_resource_arn = "*"
+
+    attach_load_balancer = false # if you still want LB (but private ALB/NLB)
+    is_internal_service  = true  # ensures it's private-facing
+
+    create_tg       = false
+    use_existing_tg = false
+    existing_tg_arn = ""
+    create_lr       = false
+    tg-name         = ""
+
+    autoscaling_enabled = true
+    max_capacity        = 2
+    min_capacity        = 1
+
+    env_task_defintions = []
+    secrets             = []
+  }
+
 }
 # ################################################################
 # #                            ECS CI-CD                         #
