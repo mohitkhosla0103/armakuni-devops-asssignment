@@ -376,3 +376,12 @@ module "ec2_instances" {
   tags                      = var.tags
   extra_tags                = var.extra_tags
 }
+
+
+module "service_discovery_private_dns" {
+  source = "../module/servicediscovery"
+
+  vpc_id                   = module.vpc.vpc_id
+  is_internal_service      = true // providing value here because it will be created only one time.
+  ecs_service_cluster_name = module.ecs_cluster.cluster_name
+}
