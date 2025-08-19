@@ -151,10 +151,11 @@ locals {
       ingress_rules = [] # leave empty
       egress_rules = [
         {
-          from_port   = 0
-          to_port     = 0
-          protocol    = "-1"
-          cidr_blocks = ["0.0.0.0/0"] # allow outbound if needed
+          from_port       = 0
+          to_port         = 0
+          protocol        = "-1"
+          cidr_blocks     = ["0.0.0.0/0"] # allow outbound if needed
+          security_groups = []
         }
       ]
       tags = var.extra_tags
