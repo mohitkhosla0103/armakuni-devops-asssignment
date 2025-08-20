@@ -186,11 +186,11 @@ ecs_service = {
     port_mappings = [
       {
         containerPort = 8080
-        # hostPort      = ""
-        protocol     = "tcp"
-        name         = "8080"
-        path_pattern = "/"
-        host_header  = ""
+        hostPort      = "0"
+        protocol      = "tcp"
+        name          = "8080"
+        path_pattern  = "/"
+        host_header   = ""
       }
     ]
     health_check_paths = {
