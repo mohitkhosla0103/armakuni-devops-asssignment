@@ -244,7 +244,7 @@ module "ecs_service" {
   healthy_threshold     = each.value.healthy_threshold
   unhealthy_threshold   = each.value.unhealthy_threshold
 
-  attach_load_balancer = each.value.attach_load_balancer
+  attach_load_balancer = each.value.is_internal_service ? false : each.value.attach_load_balancer
   security_group_ids   = each.value.is_internal_service ? [module.independent_security_group["${local.environment}-private-ecs-sg"].sg_id] : [module.dependent_security_group["${local.environment}-autoscaling-group-sg"].sg_id]
   private_subnet_ids   = local.pvt_subnet_ids
 

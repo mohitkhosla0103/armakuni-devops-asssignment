@@ -77,28 +77,25 @@ locals {
   #################################################################
   #                          Security Groups                      #
   #################################################################
-
   independent_security_group = {
     "${terraform.workspace}-loadbalancer-sg" = {
       name        = "${terraform.workspace}-loadbalancer-sg"
       description = "${terraform.workspace} loadbalancer sg"
       ingress_rules = [
         {
-          from_port   = 80
-          to_port     = 80
-          protocol    = "tcp"
-          cidr_blocks = ["0.0.0.0/0"]
-          //ipv6_cidr_block = ["::/0"]
-          description     = "Allow all traffic"
+          from_port       = 80
+          to_port         = 80
+          protocol        = "tcp"
+          cidr_blocks     = ["0.0.0.0/0"]
+          description     = "Allow all HTTP traffic"
           security_groups = []
         },
         {
-          from_port   = 443
-          to_port     = 443
-          protocol    = "tcp"
-          cidr_blocks = ["0.0.0.0/0"]
-          // ipv6_cidr_block  =["::/0"]
-          description     = "Allow all traffic"
+          from_port       = 443
+          to_port         = 443
+          protocol        = "tcp"
+          cidr_blocks     = ["0.0.0.0/0"]
+          description     = "Allow all HTTPS traffic"
           security_groups = []
         }
       ]
@@ -112,21 +109,19 @@ locals {
           security_groups = []
         }
       ]
-      tags = {
-
-      }
+      tags = {}
     },
+
     "${terraform.workspace}-bastion-host-sg" = {
       name        = "${terraform.workspace}-bastion-host-sg"
       description = "${terraform.workspace} bastionhost sg"
       ingress_rules = [
         {
-          from_port   = 22
-          to_port     = 22
-          protocol    = "tcp"
-          cidr_blocks = []
-          //ipv6_cidr_block = ["::/0"]
-          description     = "Allow all traffic"
+          from_port       = 22
+          to_port         = 22
+          protocol        = "tcp"
+          cidr_blocks     = [] # Restrict as needed
+          description     = "SSH access"
           security_groups = []
         }
       ]
@@ -140,32 +135,36 @@ locals {
           security_groups = []
         }
       ]
-      tags = {
-
-      }
+      tags = {}
     },
-    #private ECS added
+
+    # Private ECS service
     "${local.environment}-private-ecs-sg" = {
-      name          = "${local.environment}-private-ecs-sg"
-      description   = "Private ECS service SG"
-      ingress_rules = [] # leave empty
+      name        = "${local.environment}-private-ecs-sg"
+      description = "Private ECS service SG"
+      ingress_rules = [
+        {
+          from_port       = 8080
+          to_port         = 8080
+          protocol        = "tcp"
+          cidr_blocks     = []                                                                                     # No public access
+          security_groups = [module.dependent_security_group["${terraform.workspace}-autoscaling-group-sg"].sg_id] # Only Service A can access
+          description     = "Allow Service A only"
+        }
+      ]
       egress_rules = [
         {
           from_port       = 0
           to_port         = 0
           protocol        = "-1"
-          cidr_blocks     = ["0.0.0.0/0"] # allow outbound if needed
+          cidr_blocks     = [] # Keep empty to block internet access
+          description     = "No internet access"
           security_groups = []
-          description     = "Allow all outbound traffic"
-
         }
       ]
       tags = var.extra_tags
     }
-
-
   }
-
 
   dependent_security_group = {
     "${terraform.workspace}-autoscaling-group-sg" = {
@@ -177,7 +176,6 @@ locals {
           to_port         = 0
           protocol        = "-1"
           cidr_blocks     = []
-          description     = ""
           security_groups = [module.independent_security_group["${terraform.workspace}-loadbalancer-sg"].sg_id]
         },
         {
@@ -185,7 +183,6 @@ locals {
           to_port         = 0
           protocol        = "-1"
           cidr_blocks     = []
-          description     = ""
           security_groups = [module.independent_security_group["${terraform.workspace}-bastion-host-sg"].sg_id]
         }
       ]
@@ -199,11 +196,9 @@ locals {
           security_groups = []
         }
       ]
-      tags = {
-
-      }
-
+      tags = {}
     },
+
     "${terraform.workspace}-rds-sg" = {
       name        = "${terraform.workspace}-rds-sg"
       description = "${terraform.workspace} rds sg"
@@ -213,7 +208,6 @@ locals {
           to_port         = 0
           protocol        = "-1"
           cidr_blocks     = ["0.0.0.0/0"]
-          description     = ""
           security_groups = []
         }
       ]
@@ -223,17 +217,13 @@ locals {
           to_port         = 0
           protocol        = "-1"
           cidr_blocks     = ["0.0.0.0/0"]
-          description     = "Allow all outbound traffic"
           security_groups = []
         }
       ]
-      tags = {
-
-      }
-
+      tags = {}
     }
-
   }
+
 
 
   # private_ecs_ingress_rule = [
