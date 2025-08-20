@@ -2,7 +2,7 @@
 FROM python:3.11-slim
 
 # Set working directory
-WORKDIR /appserviceb
+WORKDIR /appprivateservice
 
 # Copy files
 COPY requirements.txt .
