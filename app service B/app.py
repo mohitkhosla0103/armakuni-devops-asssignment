@@ -9,15 +9,9 @@ logging.basicConfig(level=logging.INFO)
 @app.route("/")
 def hello():
     app.logger.info(f"Request to / from {request.remote_addr}")
-    return "Hello World"
+    return "Hello from Service B"
 
 @app.route("/healthz")
-def health():
-    app.logger.info(f"Health check from {request.remote_addr}")
-    return {"status": "ok"}, 200
-
-
-@app.route("/serviceb")
 def health():
     app.logger.info(f"Health check from {request.remote_addr}")
     return {"status": "ok"}, 200
