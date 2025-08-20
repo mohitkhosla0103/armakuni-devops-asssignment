@@ -232,75 +232,81 @@ ecs_service = {
 
 ecs_cicd = {
   cicd1 = {
-    ecs_service_cluster_name = "dev-cluster"
-    ecs_service_name         = "dev-backend-service"
+    ecs_service_cluster_name = "dev-cluster"         //Add cluster name 
+    ecs_service_name         = "dev-backend-service" //Add service name for which CI-CD is to be created
+
     environment_variables = {
+
       AWS_DEFAULT_REGION   = "us-east-1"
       AWS_ACCOUNT_ID       = "222634373323"
-      IMAGE_REPO_NAME      = "mohit-dev-backend-poc-repo"
+      IMAGE_REPO_NAME      = "mohit-dev-backend-poc-repo" //Add ECR repo name
       IMAGE_TAG            = "latest"
-      CONTAINER_NAME       = "dev-backend"
+      CONTAINER_NAME       = "dev-backend" // Add container name
       SECRET_NAME          = "dev-backend-env-secrets"
       PARAMETER_STORE_NAME = "Sample"
       DOCKER_PLATFORM      = "linux/amd64"
     }
+
     codebuild_repo_policy_name         = "dev-backend-codebuild-policy"
     codebuild_repo_project_description = "CodeBuild project for backend"
     codebuild_repo_role_name           = "dev-backend-codebuild-role"
     codebuild_repo_project_name        = "dev-backend-codebuild-project"
-    codebuild_repo_source_version      = "main"
+    codebuild_repo_source_version      = "main" //Add branch name
     buildspec_file_name                = "buildspec.yml"
-    codebuild_repo_source_location     = "https://github.com/mohitkhosla0103/armakuni-devops-asssignment"
+    codebuild_repo_source_location     = "https://github.com/mohitkhosla0103/armakuni-devops-asssignment" //Entire Repo URL for e.g (https://github.com/ak-test-organisation/ak-test)
     codebuild_repo_artifacts_name      = "dev-backend-codebuild-artifact"
     branch_event_type                  = "PUSH"
-    branch_head_ref                    = "ref/heads/main"
-    codepipeline_name                  = "dev-backend-codepipeline"
-    codepipeline_policy_name           = "dev-backend-codepipeline-policy"
-    codepipeline_role_name             = "dev-backend-codepipeline-role"
-    remote_party_owner                 = "ThirdParty"
-    source_version_provider            = "GitHub"
-    connection_arn                     = "arn:aws:codeconnections:us-east-1:222634373323:connection/df31bb54-b8bb-4331-bbfe-8235483f27c6"
-    remote_repo_name                   = "mohitkhosla0103/armakuni-devops-asssignment"
-    remote_branch                      = "main"
-    remote_file_path                   = ""
-    deployment_timeout                 = 25
-    definition_file_name               = "imagedefinitions.json"
-  }
+    branch_head_ref                    = "ref/heads/main" //Add branch name
 
-  cicd2 = { # <-- Service B
+    codepipeline_name        = "dev-backend-codepipeline" //Source & Build artifacts are stored in folder (folder name is same as pipeline name) in artifact s3 bucket that we created earlier        
+    codepipeline_policy_name = "dev-backend-codepipeline-policy"
+    codepipeline_role_name   = "dev-backend-codepipeline-role"
+    remote_party_owner       = "ThirdParty"
+    source_version_provider  = "GitHub"                                                                                         //Enter Source version provider
+    connection_arn           = "arn:aws:codeconnections:us-east-1:222634373323:connection/df31bb54-b8bb-4331-bbfe-8235483f27c6" //Enter ARN of Codestar Connection that we created using console
+    remote_repo_name         = "mohitkhosla0103/armakuni-devops-asssignment"                                                    //Enter Organization/repo-name  for e.g (ak-test-organisation/ak-test)
+    remote_branch            = "main"                                                                                           //Add branch name
+    remote_file_path         = ""
+    deployment_timeout       = 25
+    definition_file_name     = "imagedefinitions.json"
+  },
+  cicd2 = { # <-- Private Service B
     ecs_service_cluster_name = "dev-cluster"
-    ecs_service_name         = "dev-serviceb-service" # Name of ECS Service B
+    ecs_service_name         = "dev-private-service"
+
     environment_variables = {
       AWS_DEFAULT_REGION   = "us-east-1"
       AWS_ACCOUNT_ID       = "222634373323"
-      IMAGE_REPO_NAME      = "mohit-dev-serviceb-repo" # ECR repo for Service B
+      IMAGE_REPO_NAME      = "mohit-dev-backend-poc-repo" # or use a separate ECR repo for Service B
       IMAGE_TAG            = "latest"
-      CONTAINER_NAME       = "dev-serviceb"
-      SECRET_NAME          = "dev-serviceb-env-secrets"
+      CONTAINER_NAME       = "dev-private"
+      SECRET_NAME          = "dev-private-env-secrets"
       PARAMETER_STORE_NAME = "Sample"
       DOCKER_PLATFORM      = "linux/amd64"
     }
-    codebuild_repo_policy_name         = "dev-serviceb-codebuild-policy"
-    codebuild_repo_project_description = "CodeBuild project for Service B"
-    codebuild_repo_role_name           = "dev-serviceb-codebuild-role"
-    codebuild_repo_project_name        = "dev-serviceb-codebuild-project"
+
+    codebuild_repo_policy_name         = "dev-private-codebuild-policy"
+    codebuild_repo_project_description = "CodeBuild project for private service B"
+    codebuild_repo_role_name           = "dev-private-codebuild-role"
+    codebuild_repo_project_name        = "dev-private-codebuild-project"
     codebuild_repo_source_version      = "main"
     buildspec_file_name                = "buildspec.yml"
     codebuild_repo_source_location     = "https://github.com/mohitkhosla0103/armakuni-devops-asssignment"
-    codebuild_repo_artifacts_name      = "dev-serviceb-codebuild-artifact"
+    codebuild_repo_artifacts_name      = "dev-private-codebuild-artifact"
     branch_event_type                  = "PUSH"
     branch_head_ref                    = "ref/heads/main"
-    codepipeline_name                  = "dev-serviceb-codepipeline"
-    codepipeline_policy_name           = "dev-serviceb-codepipeline-policy"
-    codepipeline_role_name             = "dev-serviceb-codepipeline-role"
-    remote_party_owner                 = "ThirdParty"
-    source_version_provider            = "GitHub"
-    connection_arn                     = "arn:aws:codeconnections:us-east-1:222634373323:connection/df31bb54-b8bb-4331-bbfe-8235483f27c6"
-    remote_repo_name                   = "mohitkhosla0103/armakuni-devops-asssignment"
-    remote_branch                      = "main"
-    remote_file_path                   = ""
-    deployment_timeout                 = 25
-    definition_file_name               = "imagedefinitions.json"
+
+    codepipeline_name        = "dev-private-codepipeline"
+    codepipeline_policy_name = "dev-private-codepipeline-policy"
+    codepipeline_role_name   = "dev-private-codepipeline-role"
+    remote_party_owner       = "ThirdParty"
+    source_version_provider  = "GitHub"
+    connection_arn           = "arn:aws:codeconnections:us-east-1:222634373323:connection/df31bb54-b8bb-4331-bbfe-8235483f27c6"
+    remote_repo_name         = "mohitkhosla0103/armakuni-devops-asssignment"
+    remote_branch            = "main"
+    remote_file_path         = ""
+    deployment_timeout       = 25
+    definition_file_name     = "imagedefinitions.json"
   }
 }
 
