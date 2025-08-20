@@ -174,7 +174,7 @@ ecs_service = {
     unhealthy_threshold    = 2
 
     ecs_task_family          = "dev-private-task-definition"
-    network_mode             = "bridge"
+    network_mode             = "awsvpc"
     requires_compatibilities = ["EC2"]
     task_cpu                 = 256
     task_memory              = 512
@@ -186,7 +186,7 @@ ecs_service = {
     port_mappings = [
       {
         containerPort = 8080
-        hostPort      = "8080"
+        hostPort      = ""
         protocol      = "tcp"
         name          = "8080"
         path_pattern  = "/"
