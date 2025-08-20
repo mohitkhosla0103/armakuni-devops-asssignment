@@ -186,7 +186,7 @@ ecs_service = {
     port_mappings = [
       {
         containerPort = 8080
-        hostPort      = "0"
+        hostPort      = "8080"
         protocol      = "tcp"
         name          = "8080"
         path_pattern  = "/"
