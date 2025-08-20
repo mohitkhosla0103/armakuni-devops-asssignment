@@ -78,6 +78,7 @@ locals {
   #                          Security Groups                      #
   #################################################################
   independent_security_group = {
+    # Load balancer SG (public)
     "${terraform.workspace}-loadbalancer-sg" = {
       name        = "${terraform.workspace}-loadbalancer-sg"
       description = "${terraform.workspace} loadbalancer sg"
@@ -87,16 +88,16 @@ locals {
           to_port         = 80
           protocol        = "tcp"
           cidr_blocks     = ["0.0.0.0/0"]
-          description     = "Allow all HTTP traffic"
           security_groups = []
+          description     = "Allow HTTP traffic from anywhere"
         },
         {
           from_port       = 443
           to_port         = 443
           protocol        = "tcp"
           cidr_blocks     = ["0.0.0.0/0"]
-          description     = "Allow all HTTPS traffic"
           security_groups = []
+          description     = "Allow HTTPS traffic from anywhere"
         }
       ]
       egress_rules = [
@@ -105,13 +106,14 @@ locals {
           to_port         = 0
           protocol        = "-1"
           cidr_blocks     = ["0.0.0.0/0"]
-          description     = "Allow all outbound traffic"
           security_groups = []
+          description     = "Allow all outbound traffic"
         }
       ]
-      tags = {}
-    },
+      tags = var.extra_tags
+    }
 
+    # Bastion SG (public SSH)
     "${terraform.workspace}-bastion-host-sg" = {
       name        = "${terraform.workspace}-bastion-host-sg"
       description = "${terraform.workspace} bastionhost sg"
@@ -120,9 +122,9 @@ locals {
           from_port       = 22
           to_port         = 22
           protocol        = "tcp"
-          cidr_blocks     = [] # Restrict as needed
-          description     = "SSH access"
+          cidr_blocks     = ["YOUR_OFFICE_IP/32"] # restrict SSH access
           security_groups = []
+          description     = "Allow SSH from trusted IP"
         }
       ]
       egress_rules = [
@@ -131,25 +133,24 @@ locals {
           to_port         = 0
           protocol        = "-1"
           cidr_blocks     = ["0.0.0.0/0"]
-          description     = "Allow all outbound traffic"
           security_groups = []
+          description     = "Allow all outbound traffic"
         }
       ]
-      tags = {}
-    },
+      tags = var.extra_tags
+    }
 
-    # Private ECS service
+    # Private ECS SG (Service B) — NO internet
     "${local.environment}-private-ecs-sg" = {
       name        = "${local.environment}-private-ecs-sg"
       description = "Private ECS service SG"
       ingress_rules = [
         {
-          from_port       = 8080
+          from_port       = 8080 # service port
           to_port         = 8080
           protocol        = "tcp"
-          cidr_blocks     = []                                                                                     # No public access
-          security_groups = [module.dependent_security_group["${terraform.workspace}-autoscaling-group-sg"].sg_id] # Only Service A can access
-          description     = "Allow Service A only"
+          security_groups = [module.independent_security_group["${terraform.workspace}-loadbalancer-sg"].sg_id]
+          description     = "Allow traffic only from Service A (LB)"
         }
       ]
       egress_rules = [
@@ -157,16 +158,16 @@ locals {
           from_port       = 0
           to_port         = 0
           protocol        = "-1"
-          cidr_blocks     = [] # Keep empty to block internet access
+          cidr_blocks     = [] # NO internet
+          security_groups = [] # no other SG allowed
           description     = "No internet access"
-          security_groups = []
         }
       ]
       tags = var.extra_tags
     }
   }
-
   dependent_security_group = {
+    # ECS Autoscaling SG (Service A instances)
     "${terraform.workspace}-autoscaling-group-sg" = {
       name        = "${terraform.workspace}-autoscaling-group-sg"
       description = "${terraform.workspace} autoscaling-group sg"
@@ -177,13 +178,7 @@ locals {
           protocol        = "-1"
           cidr_blocks     = []
           security_groups = [module.independent_security_group["${terraform.workspace}-loadbalancer-sg"].sg_id]
-        },
-        {
-          from_port       = 0
-          to_port         = 0
-          protocol        = "-1"
-          cidr_blocks     = []
-          security_groups = [module.independent_security_group["${terraform.workspace}-bastion-host-sg"].sg_id]
+          description     = "Allow all traffic from LB"
         }
       ]
       egress_rules = [
@@ -192,13 +187,14 @@ locals {
           to_port         = 0
           protocol        = "-1"
           cidr_blocks     = ["0.0.0.0/0"]
-          description     = "Allow all outbound traffic"
           security_groups = []
+          description     = "Allow all outbound traffic"
         }
       ]
-      tags = {}
-    },
+      tags = var.extra_tags
+    }
 
+    # RDS SG
     "${terraform.workspace}-rds-sg" = {
       name        = "${terraform.workspace}-rds-sg"
       description = "${terraform.workspace} rds sg"
@@ -209,6 +205,7 @@ locals {
           protocol        = "-1"
           cidr_blocks     = ["0.0.0.0/0"]
           security_groups = []
+          description     = "Allow DB traffic if needed"
         }
       ]
       egress_rules = [
@@ -218,24 +215,12 @@ locals {
           protocol        = "-1"
           cidr_blocks     = ["0.0.0.0/0"]
           security_groups = []
+          description     = "Allow all outbound traffic"
         }
       ]
-      tags = {}
+      tags = var.extra_tags
     }
   }
-
-
-
-  # private_ecs_ingress_rule = [
-  #   {
-  #     from_port       = 8080
-  #     to_port         = 8080
-  #     protocol        = "tcp"
-  #     cidr_blocks     = []
-  #     security_groups = [module.dependent_security_group["${local.environment}-autoscaling-group-sg"].sg_id]
-  #     description     = "Allow existing ECS service to access private ECS"
-  #   }
-  # ]
 
   #################################################################
   #                          EC2                                  #
