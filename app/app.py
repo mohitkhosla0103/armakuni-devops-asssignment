@@ -22,7 +22,7 @@ def call_serviceb():
     app.logger.info(f"Calling Service B from {request.remote_addr}")
     try:
         # Replace 'serviceb.local' with the private DNS name of Service B in ECS
-        serviceb_url = "http://serviceb.local:3000/healthz"
+        serviceb_url = "http://dev-private-service.dev-cluster.terraform.local:3000/healthz" 
         response = requests.get(serviceb_url)
         response.raise_for_status()  # raise error for non-2xx responses
         data = response.json()
